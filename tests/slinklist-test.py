@@ -1,7 +1,8 @@
 #!/usr/local/bin/python3
 
-from context import linkedlist
 import unittest
+
+from context import linkedlist
 
 
 class TestCreateSingleLinkedList(unittest.TestCase):
@@ -66,7 +67,7 @@ class TestGetSetDeleteItem(unittest.TestCase):
         self.linkedList = linkedlist.SingleLinkedList()
         for value in self.values:
             self.linkedList.append(value)
-        
+
         self.head_node = self.linkedList.headNode
         self.last_node = self.linkedList.lastNode
         self.second_node = self.linkedList.headNode.nextNode

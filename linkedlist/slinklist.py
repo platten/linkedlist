@@ -39,6 +39,15 @@ class SingleLinkedList:
     def __len__(self):
         return self.length
 
+    def __eq__(self, other):
+        if self is other:
+            return True
+        elif type(self) != type(other):
+            return False
+        else:
+            return list(self.__iter__()) == list(other.__iter__()) and \
+                self.length == other.length
+
     def __iter__(self):
         return self.LinkedListIterator(self.headNode)
 
@@ -179,28 +188,6 @@ def main():
     alphabetList = [chr(letter) for letter in range(ord('a'), ord('z') + 1)]
     for letter in alphabetList:
         linkedList.append(letter)
-    print(linkedList)
-    # linkedList[-1] = "abc"
-    # print(linkedList)
-
-    # import copy 
-    # linkedList2 = copy.deepcopy(linkedList)
-    # del linkedList2[0]
-    # print(linkedList2)
-
-    # linkedList2 = copy.deepcopy(linkedList)
-    # del linkedList2[-1]
-    # print(linkedList2)
-
-    # linkedList2 = copy.deepcopy(linkedList)
-    # del linkedList2[25]
-    # print(linkedList2)
-    
-    # linkedList2 = copy.deepcopy(linkedList)
-    # del linkedList2[1]
-    # print(linkedList2)
-    print(linkedList.delete("a"))
-    del linkedList[0]
     print(linkedList)
 
 if __name__ == "__main__":
