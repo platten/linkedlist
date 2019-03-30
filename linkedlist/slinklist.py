@@ -45,9 +45,19 @@ class SingleLinkedList:
         elif type(self) != type(other):
             return False
         else:
-            return list(self.__iter__()) == list(other.__iter__()) and \
-                self.length == other.length
-
+            if self.length != other.length:
+                return False
+            
+            theSame = True
+            selfIter = self.__iter__()
+            otherIter = other.__iter__()
+            for _ in range(0, self.length):
+                if selfIter.next().value != otherIter.next().value:
+                    theSame = False
+                    break
+            
+            return theSame
+    
     def __iter__(self):
         return self.LinkedListIterator(self.headNode)
 

@@ -4,7 +4,6 @@ import unittest
 
 from context import linkedlist
 
-
 class TestCreateSingleLinkedList(unittest.TestCase):
     def setUp(self):
         self.values = ("value 1", "value 2", "value 3")
@@ -59,6 +58,45 @@ class TestCreateSingleLinkedList(unittest.TestCase):
         self.assertEqual(self.linkedList.headNode.nextNode.nextNode.value, self.values[2], "Third node value should be the same as the used in constructor")
         self.assertEqual(self.linkedList.length, 3, "Length should be 3")
 
+    def test_equal(self):
+        linkedList2 = linkedlist.SingleLinkedList()
+
+        for value in self.values:
+            self.linkedList.append(value)
+            linkedList2.append(value)
+        self.assertEqual(self.linkedList, linkedList2, "Values should be the same")
+
+    def test_equal_same_object(self):
+        for value in self.values:
+            self.linkedList.append(value)
+        anotherListReference = self.linkedList
+        self.assertEqual(self.linkedList, anotherListReference, "Should be refering to the same object")
+
+    def test_unequal_type(self):
+        myString = "test string"
+        for value in self.values:
+            self.linkedList.append(value)
+        self.assertNotEqual(self.linkedList, myString, "Linked list should not be equal to a string")
+
+    def test_unequal_size(self):
+        linkedList2 = linkedlist.SingleLinkedList()
+
+        for value in self.values:
+            self.linkedList.append(value)
+            linkedList2.append(value)
+        linkedList2.append("value 4")
+        self.assertNotEqual(self.linkedList, linkedList2, "Link lists are not equal")
+
+    def test_unequal_composition(self):
+        linkedList2 = linkedlist.SingleLinkedList()
+
+        for value in self.values:
+            self.linkedList.append(value)
+            
+        linkedList2.append(self.values[0])
+        linkedList2.append(self.values[1])
+        linkedList2.append("different value")
+        self.assertNotEqual(self.linkedList, linkedList2, "Link list content are different")
 
 class TestGetSetDeleteItem(unittest.TestCase):
     def setUp(self):
