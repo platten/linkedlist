@@ -1,0 +1,7 @@
+language: python
+python:
+  - "3.7"
+cache: pip
+script:
+  - cd tests
+  - python slinklist-test.py
