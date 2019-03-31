@@ -1,36 +1,40 @@
 #!/usr/local/bin/python3
 
+import collections.abc
 
-class SingleLinkedList:
-    class Node:
+
+class SingleLinkedList(collections.abc.Sequence):
+    class Node(collections.abc.Container):
         def __init__(self, value=None):
             self.value = value
             self.nextNode = None
-        
+
         def __str__(self):
             return str(self.value)
-        
+
         def __repr__(self):
             return self.__str__()
 
-    class LinkedListIterator:
+        def __contains__(self, value):
+            if self.value == value:
+                return True
+            return False
+
+    class LinkedListIterator(collections.abc.Iterator):
         def __init__(self, head):
             self.current = head
 
         def __iter__(self):
             return self
-    
+
         def __next__(self):
-            if self.current == None:
+            if self.current is None:
                 raise StopIteration
             else:
                 current = self.current
                 self.current = self.current.nextNode
                 return current
-        
-        def next(self):
-            return self.__next__()    
-        
+
     def __init__(self):
         self.headNode = None
         self.lastNode = None
@@ -47,17 +51,26 @@ class SingleLinkedList:
         else:
             if self.length != other.length:
                 return False
-            
+
             theSame = True
-            selfIter = self.__iter__()
-            otherIter = other.__iter__()
+            selfIter = iter(self)
+            otherIter = iter(other)
             for _ in range(0, self.length):
-                if selfIter.next().value != otherIter.next().value:
+                if next(selfIter).value != next(otherIter).value:
                     theSame = False
                     break
-            
             return theSame
-    
+
+    def __contains__(self, value):
+        for element in iter(self):
+            if element.value == value:
+                return True
+        return False
+
+    def __add__(self, other):
+        for value in other:
+            self.append(value)
+
     def __iter__(self):
         return self.LinkedListIterator(self.headNode)
 
@@ -96,7 +109,6 @@ class SingleLinkedList:
                     raise IndexError("Index out of range")
                 previous = current
                 current = current.nextNode
-            
             if not previous:
                 # Head node
                 self.headNode = current.nextNode
@@ -114,47 +126,44 @@ class SingleLinkedList:
                 raise IndexError("Index out of range")
             return self.__delitem__(index + self.length)
 
-    def __search(self, value):
-        current = self.headNode
-        found = False
+    def extend(self, other):
+        self.__add__(other)
+
+    def index(self, value, start=0, stop=None):
+        # Returns first value of index. Will raise ValueError if not found.
+        iterator = iter(self)
         index = 0
+        for _ in range(0, start):
+            next(iterator)
+            index += 1
+        while True:
+            try:
+                current = next(iterator)
+            except StopIteration:
+                raise ValueError
 
-        while current and not found:
             if current.value == value:
-                found = True
-            else:
-                current = current.nextNode
-                index += 1
-        if not current:
-            return None
-        return current, index
+                return index
+            if stop is not None and index == stop:
+                raise ValueError
+            index += 1
 
-    def search(self, value):
-        """
-        Searches the list for a node with payload value. Returns the node object or None if not found.
-        """
-        response = self.__search(value)
-        if not response:
-            return None
-        return response[0]
-
-    def indexOf(self, value):
-        """
-        Searches the list for a node with payload value. Returns the index of the object or None if not found.
-        """
-        response = self.__search(value)
-        if not response:
-            return None
-        return response[1]
+    def count(self, value):
+        counter = 0
+        for element in self.__iter__():
+            if element.value == value:
+                counter += 1
+        return counter
 
     def delete(self, value):
         """
-        Deletes a node from the list with the provided payload value. Returns the node object or None if not found.
+        Deletes a node from the list with the provided payload value.
+        Returns the node object or None if not found.
         """
         current = self.headNode
         previous = None
         found = False
-        
+
         while current and not found:
             if current and current.value == value:
                 found = True
@@ -199,6 +208,7 @@ def main():
     for letter in alphabetList:
         linkedList.append(letter)
     print(linkedList)
+
 
 if __name__ == "__main__":
     main()

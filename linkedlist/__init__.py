@@ -1,1 +1,1 @@
-from slinklist import SingleLinkedList
+from .slinklist import SingleLinkedList

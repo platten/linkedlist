@@ -214,39 +214,39 @@ class TestSearchIndexOfDelete(unittest.TestCase):
         self.third_node = self.linkedList.headNode.nextNode.nextNode
 
     def test_search_exists_first(self):
-        result = self.linkedList.search(self.values[0])
-        self.assertEqual(result, self.head_node, "First node should be returned")
+        result = self.values[0] in self.linkedList
+        self.assertEqual(result, True, "First node should be returned")
 
     def test_search_exists_second(self):
-        result = self.linkedList.search(self.values[1])
-        self.assertEqual(result, self.second_node, "Second node should be returned")
+        result = self.values[1] in self.linkedList
+        self.assertEqual(result, True, "Second node should be returned")
 
     def test_search_exists_third(self):
-        result = self.linkedList.search(self.values[2])
-        self.assertEqual(result, self.third_node, "Third node should be returned")
+        result = self.values[2] in self.linkedList
+        self.assertEqual(result, True, "Third node should be returned")
     
     def test_search_does_not_exist(self):
-        result = self.linkedList.search("unknown value")
-        self.assertEqual(result, None, "None should be returned for unknown value")
+        result = "unknown value" in self.linkedList
+        self.assertEqual(result, False, "None should be returned for unknown value")
 
-    def test_indexOf_exists_first(self):
+    def test_index_exists_first(self):
         index = 0
-        result = self.linkedList.indexOf(self.values[index])
+        result = self.linkedList.index(self.values[index])
         self.assertEqual(result, index, "Index 0 should be returned")
 
-    def test_indexOf_exists_second(self):
+    def test_index_exists_second(self):
         index = 1
-        result = self.linkedList.indexOf(self.values[index])
+        result = self.linkedList.index(self.values[index])
         self.assertEqual(result, index, "Index 1 should be returned")
 
-    def test_indexOf_exists_third(self):
+    def test_index_exists_third(self):
         index = 2
-        result = self.linkedList.indexOf(self.values[index])
+        result = self.linkedList.index(self.values[index])
         self.assertEqual(result, index, "Index 2 should be returned")
     
-    def test_indexOf_does_not_exist(self):
-        result = self.linkedList.indexOf("unknown value")
-        self.assertEqual(result, None, "None should be returned for unknown value")
+    def test_index_does_not_exist(self):
+        with self.assertRaises(ValueError):
+            result = self.linkedList.index("unknown value")
 
     def test_delete_exists_first(self):
         index = 0
