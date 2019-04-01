@@ -1,0 +1,12 @@
+language: python
+dist: bionic
+python:
+  - "3.6"
+cache: pip
+install:
+  - pip install codecov
+script:
+  - cd tests
+  - coverage run slinklist-test.py
+after_success:
+  - codecov
