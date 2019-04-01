@@ -68,8 +68,8 @@ class SingleLinkedList(collections.abc.Sequence):
         return False
 
     def __add__(self, other):
-        for value in other:
-            self.append(value)
+        for element in other:
+            self.append(element.value)
 
     def __iter__(self):
         return self.LinkedListIterator(self.headNode)
@@ -201,7 +201,7 @@ class SingleLinkedList(collections.abc.Sequence):
         self.length += 1
 
 
-def main():
+def main():  # pragma: no cover
     linkedList = SingleLinkedList()
 
     alphabetList = [chr(letter) for letter in range(ord('a'), ord('z') + 1)]
@@ -210,5 +210,5 @@ def main():
     print(linkedList)
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     main()

@@ -4,6 +4,30 @@ import unittest
 
 from context import linkedlist
 
+
+class TestNodeMethods(unittest.TestCase):
+    def setUp(self):
+        self.value = "value 1"
+        self.node = linkedlist.SingleLinkedList.Node()
+        self.node.value = self.value
+
+    def test_string_repr(self):
+        self.assertEqual(type(str(self.node)), type(str("")), "String representation of Node's value should be returned")
+        self.assertEqual(str(self.node), self.value, "String representation of Node's value should match value string")
+
+    def test_repr(self):
+        self.assertEqual(type(self.node.__repr__()), type(str("")), "String representation of Node's value should be returned")
+        self.assertEqual(self.node.__repr__(), self.value, "String representation of Node's value should match value string")
+
+    def test_contains(self):
+        result = self.value in self.node
+        self.assertEqual(result, True, "True should be returned if value matches __contains__ parameter")
+
+    def test_does_not_contain(self):
+        result = "Another value" in self.node
+        self.assertEqual(result, False, "False should be returned if value does not match __contains__ parameter")
+
+
 class TestCreateSingleLinkedList(unittest.TestCase):
     def setUp(self):
         self.values = ("value 1", "value 2", "value 3")
@@ -20,7 +44,35 @@ class TestCreateSingleLinkedList(unittest.TestCase):
         self.assertNotEqual(self.linkedList.headNode, None, "Head node for new list should be created")
         self.assertEqual(self.linkedList.lastNode, self.linkedList.headNode, "Last node for new list should be same as head")
         self.assertEqual(self.linkedList.length, 1, "Length should be 1")
+        self.assertEqual(len(self.linkedList), 1, "Length function should be same as self.length")
         self.assertEqual(self.linkedList.headNode.value, self.values[0], "value should be the same as the used in constructor")
+
+    def test_extend_add_empty(self):
+        linkedList2 = linkedlist.SingleLinkedList()
+        linkedList2.append(self.values[1])
+        linkedList2.append(self.values[2])
+
+        self.linkedList.extend(linkedList2)
+
+        self.assertNotEqual(self.linkedList.headNode, None, "Head node for new list should be created")
+        self.assertEqual(self.linkedList.headNode.value, self.values[1], "Head node for new list should be created with value head of second list")
+        self.assertEqual(self.linkedList.lastNode.value, self.values[2], "Last node for new list should be created with last value from second list")
+        self.assertEqual(self.linkedList.length, 2, "Length should be 2")
+
+    def test_extend_add(self):
+        self.linkedList.append(self.values[0])
+        linkedList2 = linkedlist.SingleLinkedList()
+        linkedList2.append(self.values[1])
+        linkedList2.append(self.values[2])
+
+        self.linkedList.extend(linkedList2)
+
+        self.assertNotEqual(self.linkedList.headNode, None, "Head node for new list should be created")
+        self.assertEqual(self.linkedList.headNode.value, self.values[0], "Head node for new list should be created")
+        self.assertEqual(self.linkedList.headNode.nextNode.value, self.values[1], "Second node should be created with value from first value of second list")
+        self.assertEqual(self.linkedList.headNode.nextNode.nextNode.value, self.values[2], "Third node should be created with value from first value of second list")
+        self.assertEqual(self.linkedList.lastNode.value, self.values[2], "Last value should be the second value from the second list")
+        self.assertEqual(self.linkedList.length, 3, "Length should be 3")
 
     def test_double_append(self):
         self.linkedList.append(self.values[0])
@@ -58,6 +110,13 @@ class TestCreateSingleLinkedList(unittest.TestCase):
         self.assertEqual(self.linkedList.headNode.nextNode.nextNode.value, self.values[2], "Third node value should be the same as the used in constructor")
         self.assertEqual(self.linkedList.length, 3, "Length should be 3")
 
+    def test_string_repr(self):
+        for value in self.values:
+            self.linkedList.append(value)
+
+        self.assertEqual(type(str(self.linkedList)), type(str("")), "String representation of LinkedLists should be returned")
+        self.assertEqual(str(self.linkedList), str(list(self.values)), "String representation of LinkedList should match string's list representation of list used to build string")
+
     def test_equal(self):
         linkedList2 = linkedlist.SingleLinkedList()
 
@@ -92,16 +151,17 @@ class TestCreateSingleLinkedList(unittest.TestCase):
 
         for value in self.values:
             self.linkedList.append(value)
-            
+
         linkedList2.append(self.values[0])
         linkedList2.append(self.values[1])
         linkedList2.append("different value")
         self.assertNotEqual(self.linkedList, linkedList2, "Link list content are different")
 
+
 class TestGetSetDeleteItem(unittest.TestCase):
     def setUp(self):
         self.values = ("value 1", "value 2", "value 3")
-        
+
         self.linkedList = linkedlist.SingleLinkedList()
         for value in self.values:
             self.linkedList.append(value)
@@ -127,7 +187,7 @@ class TestGetSetDeleteItem(unittest.TestCase):
 
     def test_getitem_negative_second_node(self):
         self.assertEqual(self.linkedList[-2], self.second_node, "Node with negative -2 index should be the same as second node")
-    
+
     def test_getitem_negative_third_node(self):
         self.assertEqual(self.linkedList[-3], self.head_node, "Node with negative -3 index should be the same as headNode")
 
@@ -150,7 +210,7 @@ class TestGetSetDeleteItem(unittest.TestCase):
         self.assertEqual(self.linkedList.headNode, self.second_node, "Head node should be the old second node")
         self.assertEqual(self.linkedList.headNode.nextNode, self.third_node, "Second node should be the old third node")
         self.assertEqual(self.linkedList.headNode.nextNode.nextNode, None, "There should be no third node")
-        self.assertEqual(self.linkedList.lastNode, self.last_node, "Last node should be the same")        
+        self.assertEqual(self.linkedList.lastNode, self.last_node, "Last node should be the same")
 
     def test_delitem_second_node(self):
         del self.linkedList[1]
@@ -159,7 +219,7 @@ class TestGetSetDeleteItem(unittest.TestCase):
         self.assertEqual(self.linkedList.headNode, self.head_node, "Head node should be unchanged")
         self.assertEqual(self.linkedList.headNode.nextNode, self.third_node, "Second node should be the old third node")
         self.assertEqual(self.linkedList.headNode.nextNode.nextNode, None, "There should be no third node")
-        self.assertEqual(self.linkedList.lastNode, self.last_node, "Last node should be the same")   
+        self.assertEqual(self.linkedList.lastNode, self.last_node, "Last node should be the same")
 
     def test_delitem_third_node(self):
         del self.linkedList[2]
@@ -178,6 +238,12 @@ class TestGetSetDeleteItem(unittest.TestCase):
         self.assertEqual(self.linkedList.headNode.nextNode, self.second_node, "Second node should be unchanged")
         self.assertEqual(self.linkedList.headNode.nextNode.nextNode, None, "There should be no third node")
         self.assertEqual(self.linkedList.lastNode, self.second_node, "Last node should be the second node")
+
+    def test_delitem_no_nodes(self):
+        linkedList = linkedlist.SingleLinkedList()
+
+        with self.assertRaises(IndexError):
+            del linkedList[0]
 
     def test_delitem_out_of_range_positive_index(self):
         with self.assertRaises(IndexError):
@@ -203,11 +269,11 @@ class TestGetSetDeleteItem(unittest.TestCase):
 class TestSearchIndexOfDelete(unittest.TestCase):
     def setUp(self):
         self.values = ("value 1", "value 2", "value 3")
-        
+
         self.linkedList = linkedlist.SingleLinkedList()
         for value in self.values:
             self.linkedList.append(value)
-        
+
         self.head_node = self.linkedList.headNode
         self.last_node = self.linkedList.lastNode
         self.second_node = self.linkedList.headNode.nextNode
@@ -224,7 +290,7 @@ class TestSearchIndexOfDelete(unittest.TestCase):
     def test_search_exists_third(self):
         result = self.values[2] in self.linkedList
         self.assertEqual(result, True, "Third node should be returned")
-    
+
     def test_search_does_not_exist(self):
         result = "unknown value" in self.linkedList
         self.assertEqual(result, False, "None should be returned for unknown value")
@@ -243,10 +309,38 @@ class TestSearchIndexOfDelete(unittest.TestCase):
         index = 2
         result = self.linkedList.index(self.values[index])
         self.assertEqual(result, index, "Index 2 should be returned")
-    
+
+    def test_index_exists__offset_third(self):
+        index = 2
+        result = self.linkedList.index(self.values[index], 1)
+        self.assertEqual(result, index, "Index 2 should be returned")
+
     def test_index_does_not_exist(self):
         with self.assertRaises(ValueError):
             result = self.linkedList.index("unknown value")
+
+    def test_index_does_not_exist_offset(self):
+        index = 0
+        with self.assertRaises(ValueError):
+            result = self.linkedList.index(self.values[index], 1)
+
+    def test_index_does_not_exist_offset_and_stop(self):
+        index = 2
+        with self.assertRaises(ValueError):
+            result = self.linkedList.index(self.values[index], 0, 1)
+
+    def test_count_exists_single(self):
+        result = self.linkedList.count(self.values[0])
+        self.assertEqual(result, 1, "One should be returned")
+
+    def test_count_exists_double(self):
+        self.linkedList.append(self.values[0])
+        result = self.linkedList.count(self.values[0])
+        self.assertEqual(result, 2, "Two should be returned")
+
+    def test_count_does_not_exist(self):
+        result = self.linkedList.count("another value")
+        self.assertEqual(result, 0, "Zero should be returned")
 
     def test_delete_exists_first(self):
         index = 0
@@ -256,7 +350,7 @@ class TestSearchIndexOfDelete(unittest.TestCase):
         self.assertEqual(self.linkedList.headNode, self.second_node, "Head node should be the old second node")
         self.assertEqual(self.linkedList.headNode.nextNode, self.third_node, "Second node should be the old third node")
         self.assertEqual(self.linkedList.headNode.nextNode.nextNode, None, "There should be no third node")
-        self.assertEqual(self.linkedList.lastNode, self.last_node, "Last node should be the same")        
+        self.assertEqual(self.linkedList.lastNode, self.last_node, "Last node should be the same")
 
     def test_delete_exists_second(self):
         index = 1
@@ -266,7 +360,7 @@ class TestSearchIndexOfDelete(unittest.TestCase):
         self.assertEqual(self.linkedList.headNode, self.head_node, "Head node should be unchanged")
         self.assertEqual(self.linkedList.headNode.nextNode, self.third_node, "Second node should be the old third node")
         self.assertEqual(self.linkedList.headNode.nextNode.nextNode, None, "There should be no third node")
-        self.assertEqual(self.linkedList.lastNode, self.last_node, "Last node should be the same")   
+        self.assertEqual(self.linkedList.lastNode, self.last_node, "Last node should be the same")
 
     def test_delete_exists_third(self):
         index = 2
@@ -286,6 +380,7 @@ class TestSearchIndexOfDelete(unittest.TestCase):
         self.assertEqual(self.linkedList.headNode.nextNode, self.second_node, "Second node should not have changed")
         self.assertEqual(self.linkedList.headNode.nextNode.nextNode, self.third_node, "Third node should not have changed")
         self.assertEqual(self.linkedList.lastNode, self.third_node, "Last node should not have changed")
+
 
 if __name__ == '__main__':
     unittest.main()
